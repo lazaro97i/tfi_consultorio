@@ -29,6 +29,7 @@ int Nav(){
 	printf("\n\t\t3. Atenciones por profecional");
 	printf("\n\t\t4. Ranking de profecionales por atenciones");
 	printf("\n\t\t5. Ver usuarios");
+	printf("\n\t\t6. Ver profesionales");
 	printf("\n\t\t0. SALIR");
 	
 	printf("\n\n\tOPCION: ");
@@ -39,29 +40,43 @@ int Nav(){
 	
 }
 
-void getUsers(FILE *archivo);
-void setUser(FILE *archivo);
-void setDoc(FILE *archivo);
+void getUsers(FILE *userFile);
+void setUser(FILE *userFile);
+void setDoc(FILE *docFile);
+void getDoc(FILE *docFile);
 
 main(){
 	
-	//crea un puntero para el archivo
-	FILE *archivo;
+	
+	FILE *userFile; //crea un puntero para el archivo de usuarios
+	FILE *docFile; //crea un puntero para el archivo de profesionales
 	int navigation;
 	
 	printf("\nCargando datos...");
 	//abre el archivo en el caso de que exista, si no existe devuelve NULL
-	archivo = fopen("usuarios.dat","r+b");
+	userFile = fopen("usuarios.dat","r+b");
+	docFile = fopen("profesionales.dat", "r+b");
 	
-	if(archivo == NULL){
+	if(userFile == NULL){
 		//crea el archivo usuarios.dat
-		archivo = fopen("usuarios.dat", "w+b");
-		if(archivo == NULL){
+		userFile = fopen("usuarios.dat", "w+b");
+		if(userFile == NULL){
 			printf("ERROR al crear el archivo usuarios.dat");
 		}
-		printf("\n\nDatos cargados!!");
+		printf("\n\nUsuarios cargados!!");
 	}else{
-		printf("\n\nDatos cargados!!");
+		printf("\n\nUsuarios cargados!!");
+	}
+	
+	if(docFile == NULL){
+		//crea el archivo profesionales.dat
+		docFile = fopen("profesionales.dat", "w+b");
+		if(docFile == NULL){
+			printf("ERROR al crear el archivo profesionales.dat");
+		}
+		printf("\n\nProfesionales cargados!!");
+	}else{
+		printf("\n\nProfesionales cargados!!");
 	}
 	
 	printf("\n\n\n");
@@ -76,18 +91,21 @@ main(){
 			
 			case 1:
 				//carga doc(sin validacion)
-				setDoc(archivo);
+				setDoc(docFile);
 				break;
 			case 2:
 				//carga un nuevo usuario(sin validacion)
-				setUser(archivo);
+				setUser(userFile);
 				break;
 			case 3:
 				break;
 			case 4:
 				break;
 			case 5:
-				getUsers(archivo);
+				getUsers(userFile);
+				break;
+			case 6:
+				getDoc(docFile);
 				break;
 			case 0:
 				printf("\n\n\n\t\t\tFin del programa...\n\n\n");
@@ -103,38 +121,63 @@ main(){
 		
 	}while(navigation != 0);
 	
-	fclose(archivo);
+	fclose(userFile);
+	fclose(docFile);
 	
 }
 
-void getUsers(FILE *archivo){
+void getUsers(FILE *userFile){
 
-	fseek(archivo,0,SEEK_SET);
+	fseek(userFile,0,SEEK_SET);
 	user u;
 	
 	printf("\n\n\n\t\t\tLista de usuarios.\n");
 	printf("\t\t\t------------------");
 	
-	fread(&u,sizeof(user),1,archivo);
+	fread(&u,sizeof(user),1,userFile);                                
 	
-	while(!feof(archivo)){
+	while(!feof(userFile)){
 		
 		printf("\n\n\tNombre: %s", u.fullName);
 		printf("\n\tUsuario: %s", u.userName);
 		printf("\n\tPassword: %s", u.pass);
 		printf("\n\n\t------------");
 		
-		fread(&u,sizeof(u),1,archivo);
+		fread(&u,sizeof(u),1,userFile);
 	}
 	
 }
 
-void setUser(FILE *archivo){
+void getDoc(FILE *docFile){
+
+	fseek(docFile,0,SEEK_SET);
+	doc d;
+	
+	printf("\n\n\n\t\t\tLista de profesionales.\n");
+	printf("\t\t\t------------------");
+	
+	fread(&d,sizeof(doc),1,docFile);                                
+	
+	while(!feof(docFile)){
+		
+		printf("\n\n\tApellido y nombre: %s", d.fullName);
+		printf("\n\tId: %d", d.id);
+		printf("\n\tDni: %d", d.dni);
+		printf("\n\tTelefono: %s", d.phone);
+		printf("\n\n\t------------");
+		
+		fread(&d,sizeof(d),1,docFile);
+	}
+	
+}
+
+
+void setUser(FILE *userFile){
 
 	user u;
 	
 	//posiciona el puntero al final del archivo para agregar un nuevo usuario
-	fseek(archivo,0,SEEK_END);
+	fseek(userFile,0,SEEK_END);
 	
 	printf("\n\n\t\tCargar usuario.");
 	printf("\n\t\t---------------");
@@ -159,14 +202,48 @@ void setUser(FILE *archivo){
 		cantidad de veces que se carga el archivo
 		puntero del archivo
 	*/
-	fwrite(&u, sizeof(u), 1, archivo);
+	fwrite(&u, sizeof(u), 1, userFile);
 	
 	printf("\n\n\t\tUsuario cargado correctamente!!");
 	
 }
 
-void setDoc(FILE *archivo){
-	printf("Aca se carga el doctor");
+void setDoc(FILE *docFile){
+	
+	doc d;
+	
+	//posiciona el puntero al final del archivo para agregar un nuevo profesional
+	fseek(docFile,0,SEEK_END);
+	
+	printf("\n\n\t\tCargar profesional.");
+	printf("\n\t\t---------------");      
+	
+	//el flushall borra el bufer de la escritura anterior 
+	_flushall();
+	printf("\n\nApellido y nombre: ");
+	gets(d.fullName);
+
+	printf("\nId Profesional: ");
+	scanf("%d", &d.id);
+
+	printf("\nDni: ");
+	scanf("%d", &d.dni);
+	
+	_flushall();
+	printf("\nTelefono: ");
+	gets(d.phone);
+	
+	/*
+	escribe el archivo guardando un nuevo profesional parametros:
+		variable de la estructura
+		tamaño del dato(en este caso el mismo tamaño de la estructura)
+		cantidad de veces que se carga el archivo
+		puntero del archivo
+	*/
+	fwrite(&d, sizeof(d), 1, docFile);
+	
+	printf("\n\n\t\tProfesional cargado correctamente!!");
+	
 }
 
 
