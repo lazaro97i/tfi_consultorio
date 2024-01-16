@@ -41,6 +41,7 @@ int Nav(){
 
 void getUsers(FILE *archivo);
 void setUser(FILE *archivo);
+void setDoc(FILE *archivo);
 
 main(){
 	
@@ -74,6 +75,8 @@ main(){
 		switch(navigation){
 			
 			case 1:
+				//carga doc(sin validacion)
+				setDoc(archivo);
 				break;
 			case 2:
 				//carga un nuevo usuario(sin validacion)
@@ -162,7 +165,9 @@ void setUser(FILE *archivo){
 	
 }
 
-
+void setDoc(FILE *archivo){
+	printf("Aca se carga el doctor");
+}
 
 
 
