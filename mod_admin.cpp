@@ -187,15 +187,13 @@ void setUser(FILE *userFile){
 	printf("\n\nNombre completo: ");
 	gets(u.fullName);
 	
+	//Ingresa un usuario, lo valida y en el caso de no validar vuelve a pedir el ingreso
 	do{
 		_flushall();
 		printf("\nUsuario: ");
 		gets(u.userName);
-		authUser(u.userName);
-	}while(!authUser(u.userName));
+	}while(!authUser(u.userName)); //La funcion authUser() devuelve un bool, si el usuario es valido devuelve el true
 	
-	
-
 	_flushall();
 	printf("\nContrasenia: ");
 	gets(u.pass);

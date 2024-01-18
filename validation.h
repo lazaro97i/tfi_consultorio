@@ -10,7 +10,7 @@ bool authUser(char userName[10]){
 	int cNum = 0;
 	
 	if(strlen(userName) > 10 || strlen(userName) < 6){
-		printf("ERROR: *El usuario debe tener entre 6 y 10 caracteres\n*");
+		printf("\nERROR: *El usuario debe tener entre 6 y 10 caracteres*\n");
 		return false;
 	}
 	
