@@ -2,11 +2,11 @@
 #include <stdio.h>
 #include <conio.h>
 #include <string.h>
-
+#include "validation.h"
 
 struct user{
 	char userName[10];
-	char pass[10];
+	char pass[32];
 	char fullName[60];
 };
 
@@ -51,6 +51,7 @@ main(){
 	FILE *userFile; //crea un puntero para el archivo de usuarios
 	FILE *docFile; //crea un puntero para el archivo de profesionales
 	int navigation;
+	user u;
 	
 	printf("\nCargando datos...");
 	//abre el archivo en el caso de que exista, si no existe devuelve NULL
@@ -171,7 +172,6 @@ void getDoc(FILE *docFile){
 	
 }
 
-
 void setUser(FILE *userFile){
 
 	user u;
@@ -186,10 +186,15 @@ void setUser(FILE *userFile){
 	_flushall();
 	printf("\n\nNombre completo: ");
 	gets(u.fullName);
-
-	_flushall();
-	printf("\nUsuario: ");
-	gets(u.userName);
+	
+	do{
+		_flushall();
+		printf("\nUsuario: ");
+		gets(u.userName);
+		authUser(u.userName);
+	}while(!authUser(u.userName));
+	
+	
 
 	_flushall();
 	printf("\nContrasenia: ");
@@ -245,6 +250,8 @@ void setDoc(FILE *docFile){
 	printf("\n\n\t\tProfesional cargado correctamente!!");
 	
 }
+
+
 
 
 
