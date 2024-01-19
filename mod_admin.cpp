@@ -281,24 +281,25 @@ void setDoc(FILE *docFile){
 	
 }
 
-bool userExists(char userName[10], FILE *userFile){
+bool userExists(char userName[10], FILE *userFile){ // verifica que el usuario ingresado no exista
 	
 	user u;
 	
-	fseek(userFile,0,SEEK_SET);
+	fseek(userFile,0,SEEK_SET); // posiciona el archivo en la primera posicion
 	
-	fread(&u,sizeof(user),1,userFile);
+	fread(&u,sizeof(user),1,userFile); // lee por primera vez el archivo
 	
-	while(!feof(userFile)){
-		if((strcmp(u.userName, userName)) == 0){
+	while(!feof(userFile)){ // mientras el puntero no se encuentre en el final del archivo, ejecuta
+		if((strcmp(u.userName, userName)) == 0){ // compara el usuario ingresado con la posicion actual, en el caso de coincidir
+												 // muestra el error y retorna un false
 			printf("\n\tERROR: *El nombre de usuario ingresado ya pertenece a un usuario registrado!.*");
 			printf("\n\tIngrese nuevamente...\n");
 			return false;
 		}
-		fread(&u,sizeof(user),1,userFile);
+		fread(&u,sizeof(user),1,userFile); // en el caso de no coincidir sigue recorriendo el archivo
 	}
 	
-	return true;
+	return true; // si no encuentra ninguna coincidencia devuelve true
 }
 
 
