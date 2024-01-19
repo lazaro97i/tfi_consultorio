@@ -21,8 +21,8 @@ int Nav(){
 	
 	int opc;
 	
-	printf("\n\t\t\t\t\tMODULO ADMINISTRACION");
-	printf("\n\t\t\t\t\t---------------------");
+	printf("\n\t\tMODULO ADMINISTRACION");
+	printf("\n\t\t---------------------");
 	
 	printf("\n\n\t\t1. Registrar profecionales");
 	printf("\n\t\t2. Registrar usuario recepcionista");
@@ -44,6 +44,7 @@ void getUsers(FILE *userFile);
 void setUser(FILE *userFile);
 void setDoc(FILE *docFile);
 void getDoc(FILE *docFile);
+bool userExists(char userName[10], FILE *userFile);
 
 main(){
 	
@@ -53,7 +54,7 @@ main(){
 	int navigation;
 	user u;
 	
-	printf("\nCargando datos...");
+	printf("\n\t\tCargando datos...");
 	//abre el archivo en el caso de que exista, si no existe devuelve NULL
 	userFile = fopen("usuarios.dat","r+b");
 	docFile = fopen("profesionales.dat", "r+b");
@@ -64,9 +65,9 @@ main(){
 		if(userFile == NULL){
 			printf("ERROR al crear el archivo usuarios.dat");
 		}
-		printf("\n\nUsuarios cargados!!");
+		printf("\n\n\t\tUsuarios cargados!!");
 	}else{
-		printf("\n\nUsuarios cargados!!");
+		printf("\n\n\t\tUsuarios cargados!!");
 	}
 	
 	if(docFile == NULL){
@@ -75,9 +76,9 @@ main(){
 		if(docFile == NULL){
 			printf("ERROR al crear el archivo profesionales.dat");
 		}
-		printf("\n\nProfesionales cargados!!");
+		printf("\n\n\t\tProfesionales cargados!!");
 	}else{
-		printf("\n\nProfesionales cargados!!");
+		printf("\n\n\t\tProfesionales cargados!!");
 	}
 	
 	printf("\n\n\n");
@@ -132,8 +133,8 @@ void getUsers(FILE *userFile){
 	fseek(userFile,0,SEEK_SET);
 	user u;
 	
-	printf("\n\n\n\t\t\tLista de usuarios.\n");
-	printf("\t\t\t------------------");
+	printf("\n\n\n\t\tLista de usuarios.\n");
+	printf("\t\t------------------");
 	
 	fread(&u,sizeof(user),1,userFile);                                
 	
@@ -154,8 +155,8 @@ void getDoc(FILE *docFile){
 	fseek(docFile,0,SEEK_SET);
 	doc d;
 	
-	printf("\n\n\n\t\t\tLista de profesionales.\n");
-	printf("\t\t\t------------------");
+	printf("\n\n\n\t\tLista de profesionales.\n");
+	printf("\t\t------------------");
 	
 	fread(&d,sizeof(doc),1,docFile);                                
 	
@@ -184,21 +185,50 @@ void setUser(FILE *userFile){
 	
 	//el flushall borra el bufer de la escritura anterior 
 	_flushall();
-	printf("\n\nNombre completo: ");
+	printf("\n\n\tApellido y nombre: ");
 	gets(u.fullName);
 	
+	while(strlen(u.fullName) < 6){ // verifica que el nombre al menos contenga 6 caracteres
+		_flushall();
+		printf("\n\tERROR: *Nombre demasiado corto.*");
+		printf("\n\n\tIngrese nuevamente...");
+		printf("\n\n\tApellido y nombre: ");
+		gets(u.fullName);
+	}
+	
+	printf("\n\n\n\n\n");
+	system("pause");
+	system("cls");
+	printf("\n\n\t\tCargar usuario.");
+	printf("\n\t\t---------------");
+	printf("\n\n\tA TENER EN CUENTA PARA EL NOMBRE DE USUARIO:");
+	printf("\n\n\t1- Debe tener entre 6 y 10 caracteres sin espacios.");
+	printf("\n\t2- Debe comenzar con una letra minuscula.");
+	printf("\n\t3- Debe tener al menos 2 letras mayusculas.");
+	printf("\n\t4- Debe tener como maximo 3 numeros/simbolos.\n");
 	//Ingresa un usuario, lo valida y en el caso de no validar vuelve a pedir el ingreso
 	do{
 		_flushall();
-		printf("\nUsuario: ");
+		printf("\n\tUsuario: ");
 		gets(u.userName);
-	}while(!authUser(u.userName)); //La funcion authUser() devuelve un bool, si el usuario es valido devuelve el true
+	}while(!authUser(u.userName) || !userExists(u.userName, userFile)); //La funcion authUser() devuelve un bool, si el usuario es valido devuelve el true
 	
-	do{
+	printf("\n\n\n\n\n");
+	system("pause");
+	system("cls");
+	printf("\n\n\t\tCargar usuario.");
+	printf("\n\t\t---------------");
+	printf("\n\n\tA TENER EN CUENTA PARA LA CONTRASENIA:");
+	printf("\n\n\t1- Debe tener entre 6 y 32 caracteres.");
+	printf("\n\t2- Debe contener al menos una letra mayuscula, una letra minuscula y un numero.");
+	printf("\n\t3- No podra contener ningun caracter de puntuacion, ni acentos, ni espacios. \n\t   Solo caracteres alfanumericos.");
+	printf("\n\t4- No debe tener mas de 3 caracteres numericos consecutivos.");
+	printf("\n\t5- No debe tener 2 caracteres consecutivos que refieran a letras alfabeticamente consecutivas. \n\t   Este criterio es valido tanto para letras mayusculas, minusculas o combinacion de ambas.\n");
+	do{ //Ingresa una contraseña, la valida y en el caso de no validar vuelve a pedir el ingreso
 		_flushall();
-		printf("\nContrasenia: ");
+		printf("\n\tContrasenia: ");
 		gets(u.pass);	
-	}while(!authPass(u.pass));
+	}while(!authPass(u.pass)); //La funcion authPass() devuelve un bool, si el usuario es valido devuelve el true
 	
 	/*
 	escribe el archivo guardando un nuevo usuario parametros:
@@ -225,17 +255,17 @@ void setDoc(FILE *docFile){
 	
 	//el flushall borra el bufer de la escritura anterior 
 	_flushall();
-	printf("\n\nApellido y nombre: ");
+	printf("\n\n\tApellido y nombre: ");
 	gets(d.fullName);
 
-	printf("\nId Profesional: ");
+	printf("\n\tId Profesional: ");
 	scanf("%d", &d.id);
 
-	printf("\nDni: ");
+	printf("\n\tDni: ");
 	scanf("%d", &d.dni);
 	
 	_flushall();
-	printf("\nTelefono: ");
+	printf("\n\tTelefono: ");
 	gets(d.phone);
 	
 	/*
@@ -249,6 +279,26 @@ void setDoc(FILE *docFile){
 	
 	printf("\n\n\t\tProfesional cargado correctamente!!");
 	
+}
+
+bool userExists(char userName[10], FILE *userFile){
+	
+	user u;
+	
+	fseek(userFile,0,SEEK_SET);
+	
+	fread(&u,sizeof(user),1,userFile);
+	
+	while(!feof(userFile)){
+		if((strcmp(u.userName, userName)) == 0){
+			printf("\n\tERROR: *El nombre de usuario ingresado ya pertenece a un usuario registrado!.*");
+			printf("\n\tIngrese nuevamente...\n");
+			return false;
+		}
+		fread(&u,sizeof(user),1,userFile);
+	}
+	
+	return true;
 }
 
 
