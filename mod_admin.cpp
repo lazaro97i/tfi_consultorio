@@ -194,9 +194,11 @@ void setUser(FILE *userFile){
 		gets(u.userName);
 	}while(!authUser(u.userName)); //La funcion authUser() devuelve un bool, si el usuario es valido devuelve el true
 	
-	_flushall();
-	printf("\nContrasenia: ");
-	gets(u.pass);
+	do{
+		_flushall();
+		printf("\nContrasenia: ");
+		gets(u.pass);	
+	}while(!authPass(u.pass));
 	
 	/*
 	escribe el archivo guardando un nuevo usuario parametros:
@@ -207,7 +209,7 @@ void setUser(FILE *userFile){
 	*/
 	fwrite(&u, sizeof(u), 1, userFile);
 	
-	printf("\n\n\t\tUsuario cargado correctamente!!");
+	printf("\n\n\t\tUsuario creado correctamente!!");
 	
 }
 
